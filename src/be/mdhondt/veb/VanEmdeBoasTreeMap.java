@@ -76,13 +76,13 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
     private static final class VEBTree<E> {
 
         private final int universeSize;
+        private final int shift, mask;
+        private final VEBTree<E> summary;
+        private final VEBTree<E>[] clusters;
         private int min;
         private int max;
         private E minValue;
         private E maxValue;
-        private VEBTree<E> summary;
-        private VEBTree<E>[] clusters;
-        private int shift, mask;
 
         VEBTree(int universeSize) {
             this.universeSize = universeSize;
@@ -100,19 +100,37 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
                 int universeSizeUpperSquare = upperSqure(universeSize);
                 summary = new VEBTree<>(universeSizeUpperSquare);
                 clusters = new VEBTree[universeSizeUpperSquare];
-                for (int i = 0; i < universeSizeUpperSquare; i++)
+                for (int i = 0; i < universeSizeUpperSquare; i++) {
                     clusters[i] = new VEBTree<>(universeSizeLowerSquare);
+                }
             }
         }
 
+        /**
+         * high(x) = floor( x / lowerSquare(universe) )
+         *
+         * shift is a power of 2 (Math.pow(2,shift) = universeSizeLowerSquare)
+         * x / u  =  x >>> shift   (if 2^shift=u)
+         */
         private int high(int x) {
             return x >>> shift;
         }
 
+        /**
+         * low(x) = x % lowerSquare(universe)
+         *
+         * x % y = (x & (y − 1))
+         */
         private int low(int x) {
             return x & mask;
         }
 
+        /**
+         * index(x, y) = x times lowerSquare(universe) + y
+         *
+         * x times u  =  x << shift    (if 2^shift=u)
+         * x + y  =  x | y    (if x&y=0) ** die if conditie geld altijd voor (x << shift)   en    (y & mask), dus in orde **
+         */
         private int index(int x, int y) {
             return (x << shift) | (y & mask);
         }
