@@ -153,6 +153,26 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
             max = k;
         }
 
+        private void insert(int k) {
+            if (min == NIL)
+                emptyInsert(k);
+            else {
+                if (k < min) {
+                    int tmp = k;
+                    k = min;
+                    min = tmp;
+                }
+                if (universeSize > 2) {
+                    if (clusters[high(k)].getMin() == NIL) {
+                        summary.insert(high(k));
+                        clusters[high(k)].emptyInsert(low(k));
+                    } else
+                        clusters[high(k)].insert(low(k));
+                }
+                if (k > max) max = k;
+            }
+        }
+
         /**
          * high(x) = floor( x / lowerSquare(universe) )
          * <p>
