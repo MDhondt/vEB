@@ -106,9 +106,35 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
             }
         }
 
+        private int getMin() {
+            return min;
+        }
+
+        private int getMax() {
+            return max;
+        }
+
+        private boolean contains(int k) {
+            if (k == min || k == max) return true;
+            if (universeSize == 2) return false;
+            return clusters[high(k)].contains(low(k));
+        }
+
+        private int successor(int k) {
+            if (universeSize == 2)
+                if (k == 0 && max == 1) return 1;
+                else return NIL;
+            if (min != NIL && k < min) return min;
+            int maxLow = clusters[high(k)].getMax();
+            if (maxLow != NIL && low(k) < maxLow) return index(high(k), clusters[high(k)].successor(low(k)));
+            int successorCluster = summary.successor(high(k));
+            if (successorCluster == NIL) return NIL;
+            return index(successorCluster, clusters[successorCluster].getMin());
+        }
+
         /**
          * high(x) = floor( x / lowerSquare(universe) )
-         *
+         * <p>
          * shift is a power of 2 (Math.pow(2,shift) = universeSizeLowerSquare)
          * x / u  =  x >>> shift   (if 2^shift=u)
          */
@@ -118,7 +144,7 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
 
         /**
          * low(x) = x % lowerSquare(universe)
-         *
+         * <p>
          * x % y = (x & (y − 1))
          */
         private int low(int x) {
@@ -127,7 +153,7 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
 
         /**
          * index(x, y) = x times lowerSquare(universe) + y
-         *
+         * <p>
          * x times u  =  x << shift    (if 2^shift=u)
          * x + y  =  x | y    (if x&y=0) ** die if conditie geld altijd voor (x << shift)   en    (y & mask), dus in orde **
          */
