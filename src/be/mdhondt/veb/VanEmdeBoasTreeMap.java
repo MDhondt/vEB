@@ -132,6 +132,11 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
             return index(successorCluster, clusters[successorCluster].getMin());
         }
 
+        private void emptyInsert(int k) {
+            min = k;
+            max = k;
+        }
+
         /**
          * high(x) = floor( x / lowerSquare(universe) )
          * <p>
