@@ -132,6 +132,22 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
             return index(successorCluster, clusters[successorCluster].getMin());
         }
 
+        private int predecessor(int k) {
+            if (universeSize == 2)
+                if (min == NIL) return NIL;
+                else if (k == 1 && min == 0) return 0;
+                else return NIL;
+            if (max != NIL && k > max) return max;
+            int minLow = clusters[high(k)].getMin();
+            if (minLow != NIL && low(k) > minLow) return index(high(k), clusters[high(k)].predecessor(low(k)));
+            int predecessorCluster = summary.predecessor(high(k));
+            if (predecessorCluster == NIL) {
+                if (min != NIL && k > min) return min;
+                return NIL;
+            }
+            return index(predecessorCluster, clusters[predecessorCluster].getMax());
+        }
+
         private void emptyInsert(int k) {
             min = k;
             max = k;
