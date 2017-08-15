@@ -97,7 +97,7 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
                 summary = null;
                 clusters = null;
             } else {
-                int universeSizeUpperSquare = upperSqure(universeSize);
+                int universeSizeUpperSquare = upperSqaure(universeSize);
                 summary = new VEBTree<>(universeSizeUpperSquare);
                 clusters = new VEBTree[universeSizeUpperSquare];
                 for (int i = 0; i < universeSizeUpperSquare; i++) {
@@ -134,17 +134,15 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
 
         private int predecessor(int k) {
             if (universeSize == 2)
-                if (min == NIL) return NIL;
-                else if (k == 1 && min == 0) return 0;
+                if (k == 1 && min == 0) return 0;
                 else return NIL;
             if (max != NIL && k > max) return max;
             int minLow = clusters[high(k)].getMin();
             if (minLow != NIL && low(k) > minLow) return index(high(k), clusters[high(k)].predecessor(low(k)));
             int predecessorCluster = summary.predecessor(high(k));
-            if (predecessorCluster == NIL) {
+            if (predecessorCluster == NIL)
                 if (min != NIL && k > min) return min;
-                return NIL;
-            }
+                else return NIL;
             return index(predecessorCluster, clusters[predecessorCluster].getMax());
         }
 
@@ -162,14 +160,39 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
                     k = min;
                     min = tmp;
                 }
-                if (universeSize > 2) {
+                if (universeSize > 2)
                     if (clusters[high(k)].getMin() == NIL) {
                         summary.insert(high(k));
                         clusters[high(k)].emptyInsert(low(k));
                     } else
                         clusters[high(k)].insert(low(k));
-                }
                 if (k > max) max = k;
+            }
+        }
+
+        private void remove(int k) {
+            if (min == max) {
+                min = NIL;
+                max = NIL;
+            } else if (universeSize == 2) {
+                if (k == 0) min = 1;
+                else min = 0;
+                max = min;
+            } else {
+                if (k == min) {
+                    int firstCluster = summary.getMin();
+                    min = index(firstCluster, clusters[firstCluster].getMin());
+                }
+                clusters[high(k)].remove(low(k));
+                if (clusters[high(k)].getMin() == NIL) {
+                    summary.remove(high(k));
+                    if (k == max) {
+                        int summaryMax = summary.getMax();
+                        if (summaryMax == NIL) max = min;
+                        else max = index(summaryMax, clusters[summaryMax].getMax());
+                    }
+                } else if (k == max)
+                    max = index(high(k), clusters[high(k)].getMax());
             }
         }
 
@@ -209,7 +232,7 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
     }
 
     // i should be power of 2?
-    private static int upperSqure(int i) {
+    private static int upperSqaure(int i) {
         return (int) pow(2.0, ceil((log(i) / log(2.0)) / 2.0));
     }
 }
