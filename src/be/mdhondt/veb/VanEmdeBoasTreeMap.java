@@ -97,7 +97,7 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
                 summary = null;
                 clusters = null;
             } else {
-                int universeSizeUpperSquare = upperSqaure(universeSize);
+                int universeSizeUpperSquare = upperSquare(universeSize);
                 summary = new VEBTree<>(universeSizeUpperSquare);
                 clusters = new VEBTree[universeSizeUpperSquare];
                 for (int i = 0; i < universeSizeUpperSquare; i++) {
@@ -114,85 +114,117 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
             return max;
         }
 
-        private boolean contains(int k) {
-            if (k == min || k == max) return true;
-            if (universeSize == 2) return false;
-            return clusters[high(k)].contains(low(k));
+        private E getValue(int key) {
+            if (key == min) return minValue;
+            if (key == max) return maxValue;
+            if (universeSize == 2) return null;
+            return clusters[high(key)].getValue(low(key));
         }
 
-        private int successor(int k) {
+        private boolean contains(int key) {
+            if (key == min || key == max) return true;
+            if (universeSize == 2) return false;
+            return clusters[high(key)].contains(low(key));
+        }
+
+        private int successor(int key) {
             if (universeSize == 2)
-                if (k == 0 && max == 1) return 1;
+                if (key == 0 && max == 1) return 1;
                 else return NIL;
-            if (min != NIL && k < min) return min;
-            int maxLow = clusters[high(k)].getMax();
-            if (maxLow != NIL && low(k) < maxLow) return index(high(k), clusters[high(k)].successor(low(k)));
-            int successorCluster = summary.successor(high(k));
+            if (min != NIL && key < min) return min;
+            int maxLow = clusters[high(key)].getMax();
+            if (maxLow != NIL && low(key) < maxLow) return index(high(key), clusters[high(key)].successor(low(key)));
+            int successorCluster = summary.successor(high(key));
             if (successorCluster == NIL) return NIL;
             return index(successorCluster, clusters[successorCluster].getMin());
         }
 
-        private int predecessor(int k) {
+        private int predecessor(int key) {
             if (universeSize == 2)
-                if (k == 1 && min == 0) return 0;
+                if (key == 1 && min == 0) return 0;
                 else return NIL;
-            if (max != NIL && k > max) return max;
-            int minLow = clusters[high(k)].getMin();
-            if (minLow != NIL && low(k) > minLow) return index(high(k), clusters[high(k)].predecessor(low(k)));
-            int predecessorCluster = summary.predecessor(high(k));
+            if (max != NIL && key > max) return max;
+            int minLow = clusters[high(key)].getMin();
+            if (minLow != NIL && low(key) > minLow) return index(high(key), clusters[high(key)].predecessor(low(key)));
+            int predecessorCluster = summary.predecessor(high(key));
             if (predecessorCluster == NIL)
-                if (min != NIL && k > min) return min;
+                if (min != NIL && key > min) return min;
                 else return NIL;
             return index(predecessorCluster, clusters[predecessorCluster].getMax());
         }
 
-        private void emptyInsert(int k) {
-            min = k;
-            max = k;
+        private void emptyInsert(int key, E value) {
+            min = key;
+            max = key;
+            minValue = value;
+            maxValue = value;
         }
 
-        private void insert(int k) {
+        private void insert(int key, E value) {
             if (min == NIL)
-                emptyInsert(k);
+                emptyInsert(key, value);
             else {
-                if (k < min) {
-                    int tmp = k;
-                    k = min;
-                    min = tmp;
+                if (key < min) {
+                    int tmpK = key;
+                    E tmpV = value;
+                    key = min;
+                    min = tmpK;
+                    value = minValue;
+                    minValue = tmpV;
                 }
                 if (universeSize > 2)
-                    if (clusters[high(k)].getMin() == NIL) {
-                        summary.insert(high(k));
-                        clusters[high(k)].emptyInsert(low(k));
+                    if (clusters[high(key)].getMin() == NIL) {
+                        summary.insert(high(key), value);
+                        clusters[high(key)].emptyInsert(low(key), value);
                     } else
-                        clusters[high(k)].insert(low(k));
-                if (k > max) max = k;
+                        clusters[high(key)].insert(low(key), value);
+                if (key > max) {
+                    max = key;
+                    maxValue = value;
+                }
             }
         }
 
-        private void remove(int k) {
+        private void remove(int key) {
             if (min == max) {
                 min = NIL;
                 max = NIL;
+                minValue = null;
+                maxValue = null;
             } else if (universeSize == 2) {
-                if (k == 0) min = 1;
-                else min = 0;
+                if (key == 0) {
+                    min = 1;
+                    minValue = maxValue;
+                } else
+                    min = 0;
                 max = min;
+                maxValue = minValue;
             } else {
-                if (k == min) {
+                if (key == min) {
                     int firstCluster = summary.getMin();
-                    min = index(firstCluster, clusters[firstCluster].getMin());
+                    key = index(firstCluster, clusters[firstCluster].getMin());
+                    min = key;
+                    minValue = getValue(key);
                 }
-                clusters[high(k)].remove(low(k));
-                if (clusters[high(k)].getMin() == NIL) {
-                    summary.remove(high(k));
-                    if (k == max) {
+                clusters[high(key)].remove(low(key));
+                if (clusters[high(key)].getMin() == NIL) {
+                    summary.remove(high(key));
+                    if (key == max) {
                         int summaryMax = summary.getMax();
-                        if (summaryMax == NIL) max = min;
-                        else max = index(summaryMax, clusters[summaryMax].getMax());
+                        if (summaryMax == NIL){
+                            max = min;
+                            maxValue = minValue;
+                        }   else {
+                            int m = index(summaryMax, clusters[summaryMax].getMax());
+                            max = m;
+                            maxValue = getValue(m);
+                        }
                     }
-                } else if (k == max)
-                    max = index(high(k), clusters[high(k)].getMax());
+                } else if (key == max) {
+                    int m = index(high(key), clusters[high(key)].getMax());
+                    max = m;
+                    maxValue = getValue(m);
+                }
             }
         }
 
@@ -232,7 +264,7 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
     }
 
     // i should be power of 2?
-    private static int upperSqaure(int i) {
+    private static int upperSquare(int i) {
         return (int) pow(2.0, ceil((log(i) / log(2.0)) / 2.0));
     }
 }
