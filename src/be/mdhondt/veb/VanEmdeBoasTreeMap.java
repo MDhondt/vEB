@@ -1,8 +1,7 @@
 package be.mdhondt.veb;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
 
 import static java.lang.Integer.numberOfTrailingZeros;
 import static java.lang.Math.*;
@@ -12,66 +11,106 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
     private static final int MIN_UNIVERSE_SIZE = 2;
     private static final int NIL = -1;
 
+    private VEBTree<E> root;
+
+    public VanEmdeBoasTreeMap(int universeSize) {
+        root = new VEBTree<>(universeSize);
+    }
+
     @Override
     public int size() {
-        throw new UnsupportedOperationException();
+        return keySet().size();
     }
 
     @Override
     public boolean isEmpty() {
-        throw new UnsupportedOperationException();
+        return root.getMin() == NIL;
     }
 
     @Override
     public boolean containsKey(Object key) {
-        throw new UnsupportedOperationException();
+        if (key instanceof Integer)
+            return root.contains((Integer) key);
+        return false;
     }
 
     @Override
     public boolean containsValue(Object value) {
-        throw new UnsupportedOperationException();
+        return values().contains(value);
     }
 
     @Override
     public E get(Object key) {
-        throw new UnsupportedOperationException();
+        if (key instanceof Integer)
+            return root.getValue((Integer) key);
+        throw new IllegalArgumentException("Key needs to be an Integer");
     }
 
     @Override
     public E put(Integer key, E value) {
-        throw new UnsupportedOperationException();
+        E oldValue = root.contains(key) ? root.getValue(key) : null;
+        if (oldValue != null) {
+            root.remove(key);
+        }
+        root.insert(key, value);
+        return oldValue;
     }
 
     @Override
     public E remove(Object key) {
-        throw new UnsupportedOperationException();
+        if (key instanceof Integer) {
+            E value = root.contains((Integer) key) ? root.getValue((Integer) key) : null;
+            if (value != null) {
+                root.remove((Integer) key);
+            }
+            return value;
+        }
+        throw new IllegalArgumentException("Key needs to be an Integer");
     }
 
     @Override
     public void putAll(Map<? extends Integer, ? extends E> m) {
-        throw new UnsupportedOperationException();
+        for (Integer key : m.keySet()) {
+            root.insert(key, m.get(key));
+        }
     }
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException();
+        root = new VEBTree<>(root.universeSize);
     }
 
     @Override
     public Set<Integer> keySet() {
-        throw new UnsupportedOperationException();
+        Set<Integer> keys = new LinkedHashSet<>();
+        if (root.getMin() == NIL) return keys;
+        int key = root.getMin();
+        while (key != NIL) {
+            keys.add(key);
+            key = root.successor(key);
+        }
+        return keys;
     }
 
     @Override
     public Collection<E> values() {
-        throw new UnsupportedOperationException();
+        List<E> values = new LinkedList<>();
+        if (root.getMin() == NIL) return values;
+        for (Integer key : keySet()) {
+            values.add(root.getValue(key));
+        }
+        return values;
     }
 
     @Override
     public Set<Entry<Integer, E>> entrySet() {
-        throw new UnsupportedOperationException();
+        Set<Entry<Integer, E>> entries = new HashSet<>();
+        if (root.getMin() == NIL) return entries;
+        for (Integer key : keySet()) {
+            entries.add(new SimpleEntry<>(key, root.getValue(key)));
+        }
+        return entries;
     }
-
 
     private static final class VEBTree<E> {
 
@@ -211,10 +250,10 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
                     summary.remove(high(key));
                     if (key == max) {
                         int summaryMax = summary.getMax();
-                        if (summaryMax == NIL){
+                        if (summaryMax == NIL) {
                             max = min;
                             maxValue = minValue;
-                        }   else {
+                        } else {
                             int m = index(summaryMax, clusters[summaryMax].getMax());
                             max = m;
                             maxValue = getValue(m);
