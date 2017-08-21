@@ -29,9 +29,7 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
 
     @Override
     public boolean containsKey(Object key) {
-        if (key instanceof Integer)
-            return root.contains((Integer) key);
-        return false;
+        return key instanceof Integer && root.contains((Integer) key);
     }
 
     @Override

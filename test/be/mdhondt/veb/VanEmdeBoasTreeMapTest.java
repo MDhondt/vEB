@@ -3,6 +3,8 @@ package be.mdhondt.veb;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class VanEmdeBoasTreeMapTest {
 
@@ -42,6 +44,46 @@ public class VanEmdeBoasTreeMapTest {
         vEBTree.remove(3);
 
         assertEquals(vEBTree.size(), 4);;
+    }
+
+    @Test
+    public void isEmpty_whenEmpty() throws Exception {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+
+        assertTrue(vEBTree.isEmpty());
+    }
+
+    @Test
+    public void isEmpty_whenNonEmpty() throws Exception {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        vEBTree.put(5, new TestObject("five"));
+
+        assertFalse(vEBTree.isEmpty());
+    }
+
+    @Test
+    public void isEmpty_whenEmptyAfterRemovals() throws Exception {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        vEBTree.put(5, new TestObject("five"));
+
+        assertFalse(vEBTree.isEmpty());
+
+        vEBTree.remove(5);
+
+        assertTrue(vEBTree.isEmpty());
+    }
+
+    @Test
+    public void isEmpty_whenNotEverythingRemoved() throws Exception {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        vEBTree.put(5, new TestObject("five"));
+        vEBTree.put(6, new TestObject("six"));
+
+        assertFalse(vEBTree.isEmpty());
+
+        vEBTree.remove(5);
+
+        assertFalse(vEBTree.isEmpty());
     }
 
     private class TestObject {
