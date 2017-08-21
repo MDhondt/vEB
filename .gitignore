@@ -12,3 +12,7 @@
 
 *.log
 
+
+
+# Other
+*.jar
