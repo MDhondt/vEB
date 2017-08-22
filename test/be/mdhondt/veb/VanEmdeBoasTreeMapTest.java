@@ -86,6 +86,58 @@ public class VanEmdeBoasTreeMapTest {
         assertFalse(vEBTree.isEmpty());
     }
 
+    @Test
+    public void containsKey_whenEmpty() throws Exception {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+
+        assertFalse(vEBTree.containsKey(1));
+        assertFalse(vEBTree.containsKey(3));
+        assertFalse(vEBTree.containsKey(5));
+        assertFalse(vEBTree.containsKey(6));
+    }
+
+    @Test
+    public void containsKey_whenContainsElements() throws Exception {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        vEBTree.put(1, new TestObject("one"));
+        vEBTree.put(2, new TestObject("two"));
+        vEBTree.put(3, new TestObject("three"));
+
+        assertTrue(vEBTree.containsKey(1));
+        assertTrue(vEBTree.containsKey(2));
+        assertTrue(vEBTree.containsKey(3));
+        assertFalse(vEBTree.containsKey(4));
+        assertFalse(vEBTree.containsKey(5));
+        assertFalse(vEBTree.containsKey(6));
+    }
+
+    @Test
+    public void containsKey_whenElementNoLongerContained() throws Exception {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        vEBTree.put(1, new TestObject("one"));
+
+        assertTrue(vEBTree.containsKey(1));
+
+        vEBTree.remove(1);
+
+        assertFalse(vEBTree.containsKey(1));
+
+        vEBTree.put(1, new TestObject("one'"));
+
+        assertTrue(vEBTree.containsKey(1));
+    }
+
+    @Test
+    public void containsKey_whenInvalidKeyObject() throws Exception {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        vEBTree.put(1, new TestObject("one"));
+
+        assertTrue(vEBTree.containsKey(1));
+        assertFalse(vEBTree.containsKey(new Object()));
+        assertFalse(vEBTree.containsKey(new TestObject("one")));
+        assertFalse(vEBTree.containsKey(null));
+    }
+
     private class TestObject {
 
         private String content;
@@ -97,6 +149,19 @@ public class VanEmdeBoasTreeMapTest {
         @Override
         public String toString() {
             return "TestObject: " + content;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TestObject that = (TestObject) o;
+            return content != null ? content.equals(that.content) : that.content == null;
+        }
+
+        @Override
+        public int hashCode() {
+            return content != null ? content.hashCode() : 0;
         }
     }
 }
