@@ -138,30 +138,57 @@ public class VanEmdeBoasTreeMapTest {
         assertFalse(vEBTree.containsKey(null));
     }
 
-    private class TestObject {
+    @Test
+    public void containsValue_whenEmpty() throws Exception {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
 
-        private String content;
+        assertFalse(vEBTree.containsValue(new TestObject("one")));
+        assertFalse(vEBTree.containsValue(new TestObject("two")));
+        assertFalse(vEBTree.containsValue(new TestObject("five")));
+        assertFalse(vEBTree.containsValue(new TestObject("six")));
+    }
 
-        TestObject(String content) {
-            this.content = content;
-        }
+    @Test
+    public void containsValue_whenContainsElements() throws Exception {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        vEBTree.put(1, new TestObject("one"));
+        vEBTree.put(2, new TestObject("two"));
+        vEBTree.put(3, new TestObject("three"));
 
-        @Override
-        public String toString() {
-            return "TestObject: " + content;
-        }
+        assertTrue(vEBTree.containsValue(new TestObject("one")));
+        assertTrue(vEBTree.containsValue(new TestObject("two")));
+        assertTrue(vEBTree.containsValue(new TestObject("three")));
+        assertFalse(vEBTree.containsValue(new TestObject("four")));
+        assertFalse(vEBTree.containsValue(new TestObject("five")));
+        assertFalse(vEBTree.containsValue(new TestObject("six")));
+    }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            TestObject that = (TestObject) o;
-            return content != null ? content.equals(that.content) : that.content == null;
-        }
+    @Test
+    public void containsValue_whenElementNoLongerContained() throws Exception {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        TestObject to = new TestObject("one");
+        vEBTree.put(1, to);
 
-        @Override
-        public int hashCode() {
-            return content != null ? content.hashCode() : 0;
-        }
+        assertTrue(vEBTree.containsValue(to));
+
+        vEBTree.remove(1);
+
+        assertFalse(vEBTree.containsValue(to));
+
+        vEBTree.put(1, to);
+
+        assertTrue(vEBTree.containsValue(to));
+    }
+
+    @Test
+    public void containsValue_whenInvalidValueObject() throws Exception {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        vEBTree.put(1, new TestObject("one"));
+
+        assertTrue(vEBTree.containsValue(new TestObject("one")));
+        assertFalse(vEBTree.containsValue(new Object()));
+        assertFalse(vEBTree.containsValue(1));
+        assertFalse(vEBTree.containsValue(new TestObject("one'")));
+        assertFalse(vEBTree.containsValue(null));
     }
 }
