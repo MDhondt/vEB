@@ -1,7 +1,7 @@
 package be.mdhondt.veb;
 
-import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.*;
 
 import static java.lang.Integer.numberOfTrailingZeros;
 import static java.lang.Math.*;
@@ -29,23 +29,41 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
 
     @Override
     public boolean containsKey(Object key) {
-        return key instanceof Integer && root.contains((Integer) key);
+        if (key == null)
+            throw new NullPointerException();
+        if (!(key instanceof Integer))
+            throw new ClassCastException();
+        Integer integerKey = (Integer) key;
+        if (integerKey < 0 || integerKey > (root.universeSize - 1))
+            throw new IndexOutOfBoundsException(integerKey + " is not an element in the universe [0," + root.universeSize + "[");
+        return root.contains(integerKey);
     }
 
     @Override
     public boolean containsValue(Object value) {
+        if (value == null)
+            throw new NullPointerException();
         return values().contains(value);
     }
 
     @Override
     public E get(Object key) {
-        if (key instanceof Integer)
-            return root.getValue((Integer) key);
-        throw new IllegalArgumentException("Key needs to be an Integer");
+        if (key == null)
+            throw new NullPointerException();
+        if (!(key instanceof Integer))
+            throw new ClassCastException();
+        Integer integerKey = (Integer) key;
+        if (integerKey < 0 || integerKey > (root.universeSize - 1))
+            throw new IndexOutOfBoundsException(integerKey + " is not an element in the universe [0," + root.universeSize + "[");
+        return root.getValue(integerKey);
     }
 
     @Override
     public E put(Integer key, E value) {
+        if (key == null || value == null)
+            throw new NullPointerException();
+        if (key < 0 || key > (root.universeSize - 1))
+            throw new IndexOutOfBoundsException(key + " is not an element in the universe [0," + root.universeSize + "[");
         E oldValue = root.contains(key) ? root.getValue(key) : null;
         if (oldValue != null) {
             root.remove(key);
@@ -141,6 +159,10 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
                     clusters[i] = new VEBTree<>(universeSizeLowerSquare);
                 }
             }
+        }
+
+        private int getUniverseSize() {
+            return universeSize;
         }
 
         private int getMin() {
