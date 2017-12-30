@@ -291,7 +291,7 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
 
         /**
          * high(x) = floor( x / lowerSquare(universe) )
-         * <p>
+         *
          * shift is a power of 2 (Math.pow(2,shift) = universeSizeLowerSquare)
          * x / u  =  x >>> shift   (if 2^shift=u)
          */
@@ -301,7 +301,7 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
 
         /**
          * low(x) = x % lowerSquare(universe)
-         * <p>
+         *
          * x % y = (x & (y − 1))
          */
         private int low(int x) {
@@ -310,9 +310,9 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
 
         /**
          * index(x, y) = x times lowerSquare(universe) + y
-         * <p>
+         *
          * x times u  =  x << shift    (if 2^shift=u)
-         * x + y  =  x | y    (if x&y=0) ** die if conditie geld altijd voor (x << shift)   en    (y & mask), dus in orde **
+         * x + y  =  x | y    (only true if x&y=0  (which is always the case if you have (x << shift) as left operand and (y a mask) as right operand))
          */
         private int index(int x, int y) {
             return (x << shift) | (y & mask);
