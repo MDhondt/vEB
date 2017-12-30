@@ -2,6 +2,9 @@ package be.mdhondt.veb;
 
 import org.junit.Test;
 
+import java.util.AbstractMap.SimpleEntry;
+
+import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
 public class VanEmdeBoasTreeMapTest {
@@ -11,8 +14,8 @@ public class VanEmdeBoasTreeMapTest {
         VanEmdeBoasTreeMap<TestObject> vEBTree1 = new VanEmdeBoasTreeMap<>(8);
         VanEmdeBoasTreeMap<TestObject> vEBTree2 = new VanEmdeBoasTreeMap<>(16);
 
-        assertEquals(vEBTree1.size(), 0);
-        assertEquals(vEBTree2.size(), 0);
+        assertEquals(0, vEBTree1.size());
+        assertEquals(0, vEBTree2.size());
     }
 
     @Test
@@ -22,26 +25,26 @@ public class VanEmdeBoasTreeMapTest {
         vEBTree.put(1, new TestObject("one"));
         vEBTree.put(2, new TestObject("two"));
 
-        assertEquals(vEBTree.size(), 2);
+        assertEquals(2, vEBTree.size());
 
         vEBTree.put(3, new TestObject("three"));
 
-        assertEquals(vEBTree.size(), 3);
+        assertEquals(3, vEBTree.size());
 
         vEBTree.put(4, new TestObject("four"));
         vEBTree.remove(3);
 
-        assertEquals(vEBTree.size(), 3);
+        assertEquals(3, vEBTree.size());
 
         vEBTree.put(3, new TestObject("three'"));
         vEBTree.put(4, new TestObject("four'"));
         vEBTree.put(5, new TestObject("five"));
 
-        assertEquals(vEBTree.size(), 5);
+        assertEquals(5, vEBTree.size());
 
         vEBTree.remove(3);
 
-        assertEquals(vEBTree.size(), 4);
+        assertEquals(4, vEBTree.size());
     }
 
     @Test
@@ -233,9 +236,9 @@ public class VanEmdeBoasTreeMapTest {
         vEBTree.put(2, new TestObject("two"));
         vEBTree.put(3, new TestObject("three"));
 
-        assertEquals(vEBTree.get(1), new TestObject("one"));
-        assertEquals(vEBTree.get(2), new TestObject("two"));
-        assertEquals(vEBTree.get(3), new TestObject("three"));
+        assertEquals(new TestObject("one"), vEBTree.get(1));
+        assertEquals(new TestObject("two"), vEBTree.get(2));
+        assertEquals(new TestObject("three"), vEBTree.get(3));
         assertNull(vEBTree.get(4));
         assertNull(vEBTree.get(5));
         assertNull(vEBTree.get(6));
@@ -246,7 +249,7 @@ public class VanEmdeBoasTreeMapTest {
         VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
         vEBTree.put(1, new TestObject("one"));
 
-        assertEquals(vEBTree.get(1), new TestObject("one"));
+        assertEquals(new TestObject("one"), vEBTree.get(1));
 
         vEBTree.remove(1);
 
@@ -254,7 +257,7 @@ public class VanEmdeBoasTreeMapTest {
 
         vEBTree.put(1, new TestObject("one"));
 
-        assertEquals(vEBTree.get(1), new TestObject("one"));
+        assertEquals(new TestObject("one"), vEBTree.get(1));
     }
 
     @Test(expected = ClassCastException.class)
@@ -292,7 +295,7 @@ public class VanEmdeBoasTreeMapTest {
 
         assertNull(vEBTree.put(2, new TestObject("two")));
         assertTrue(vEBTree.containsKey(2));
-        assertEquals(vEBTree.get(2), new TestObject("two"));
+        assertEquals(new TestObject("two"), vEBTree.get(2));
     }
 
     @Test
@@ -303,15 +306,15 @@ public class VanEmdeBoasTreeMapTest {
         vEBTree.put(4, new TestObject("four"));
 
         assertTrue(vEBTree.containsKey(2));
-        assertEquals(vEBTree.get(2), new TestObject("two"));
+        assertEquals(new TestObject("two"), vEBTree.get(2));
         assertTrue(vEBTree.containsKey(3));
-        assertEquals(vEBTree.get(3), new TestObject("three"));
+        assertEquals(new TestObject("three"), vEBTree.get(3));
         assertTrue(vEBTree.containsKey(4));
-        assertEquals(vEBTree.get(4), new TestObject("four"));
+        assertEquals(new TestObject("four"), vEBTree.get(4));
 
         assertNull(vEBTree.put(5, new TestObject("five")));
         assertTrue(vEBTree.containsKey(5));
-        assertEquals(vEBTree.get(5), new TestObject("five"));
+        assertEquals(new TestObject("five"), vEBTree.get(5));
     }
 
     @Test
@@ -320,7 +323,7 @@ public class VanEmdeBoasTreeMapTest {
         vEBTree.put(6, new TestObject("six"));
 
         assertTrue(vEBTree.containsKey(6));
-        assertEquals(vEBTree.put(6, new TestObject("six'")), new TestObject("six"));
+        assertEquals(new TestObject("six"), vEBTree.put(6, new TestObject("six'")));
     }
 
     @Test(expected = NullPointerException.class)
@@ -367,9 +370,9 @@ public class VanEmdeBoasTreeMapTest {
         vEBTree.put(2, new TestObject("two"));
         vEBTree.put(3, new TestObject("three"));
 
-        assertEquals(vEBTree.remove(1), new TestObject("one"));
-        assertEquals(vEBTree.remove(2), new TestObject("two"));
-        assertEquals(vEBTree.remove(3), new TestObject("three"));
+        assertEquals(new TestObject("one"), vEBTree.remove(1));
+        assertEquals(new TestObject("two"), vEBTree.remove(2));
+        assertEquals(new TestObject("three"), vEBTree.remove(3));
         assertNull(vEBTree.get(4));
         assertNull(vEBTree.get(5));
         assertNull(vEBTree.get(6));
@@ -418,5 +421,88 @@ public class VanEmdeBoasTreeMapTest {
         VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(universeSize);
 
         vEBTree.remove(universeSize);
+    }
+
+    @Test
+    public void clear_whenEmpty() {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+
+        assertEquals(0, vEBTree.size());
+
+        vEBTree.clear();
+
+        assertEquals(0, vEBTree.size());
+    }
+
+    @Test
+    public void clear_whenContainsElements() {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        vEBTree.put(1, new TestObject("one"));
+        vEBTree.put(2, new TestObject("two"));
+        vEBTree.put(3, new TestObject("three"));
+
+        assertEquals(3, vEBTree.size());
+
+        vEBTree.clear();
+
+        assertEquals(0, vEBTree.size());
+    }
+
+    @Test
+    public void clear_whenFull() {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(4);
+        vEBTree.put(0, new TestObject("zero"));
+        vEBTree.put(1, new TestObject("one"));
+        vEBTree.put(2, new TestObject("two"));
+        vEBTree.put(3, new TestObject("three"));
+
+        assertEquals(4, vEBTree.size());
+
+        vEBTree.clear();
+
+        assertEquals(0, vEBTree.size());
+    }
+
+    @Test
+    public void keysValuesAndEntries_whenEmpty() {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+
+        assertEquals(0, vEBTree.size());
+        assertEquals(0, vEBTree.keySet().size());
+        assertEquals(0, vEBTree.values().size());
+        assertEquals(0, vEBTree.entrySet().size());
+    }
+
+    @Test
+    public void keysValuesAndEntries_whenContainsElements() {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        vEBTree.put(1, new TestObject("one"));
+        vEBTree.put(2, new TestObject("two"));
+        vEBTree.put(3, new TestObject("three"));
+
+        assertEquals(3, vEBTree.size());
+        assertEquals(3, vEBTree.keySet().size());
+        assertTrue(vEBTree.keySet().containsAll(asList(1, 2, 3)));
+        assertEquals(3, vEBTree.values().size());
+        assertTrue(vEBTree.values().containsAll(asList(new TestObject("one"), new TestObject("two"), new TestObject("three"))));
+        assertEquals(3, vEBTree.entrySet().size());
+        assertTrue(vEBTree.entrySet().containsAll(asList(new SimpleEntry<>(1, new TestObject("one")), new SimpleEntry<>(2, new TestObject("two")), new SimpleEntry<>(3, new TestObject("three")))));
+    }
+
+    @Test
+    public void keysValuesAndEntries_whenFull() {
+        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(4);
+        vEBTree.put(0, new TestObject("zero"));
+        vEBTree.put(1, new TestObject("one"));
+        vEBTree.put(2, new TestObject("two"));
+        vEBTree.put(3, new TestObject("three"));
+
+        assertEquals(4, vEBTree.size());
+        assertEquals(4, vEBTree.keySet().size());
+        assertTrue(vEBTree.keySet().containsAll(asList(0, 1, 2, 3)));
+        assertEquals(4, vEBTree.values().size());
+        assertTrue(vEBTree.values().containsAll(asList(new TestObject("zero"), new TestObject("one"), new TestObject("two"), new TestObject("three"))));
+        assertEquals(4, vEBTree.entrySet().size());
+        assertTrue(vEBTree.entrySet().containsAll(asList(new SimpleEntry<>(0, new TestObject("zero")), new SimpleEntry<>(1, new TestObject("one")), new SimpleEntry<>(2, new TestObject("two")), new SimpleEntry<>(3, new TestObject("three")))));
     }
 }
