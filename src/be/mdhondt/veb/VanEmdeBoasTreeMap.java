@@ -65,23 +65,25 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
         if (key < 0 || key > (root.universeSize - 1))
             throw new IndexOutOfBoundsException(key + " is not an element in the universe [0," + root.universeSize + "[");
         E oldValue = root.contains(key) ? root.getValue(key) : null;
-        if (oldValue != null) {
+        if (oldValue != null)
             root.remove(key);
-        }
         root.insert(key, value);
         return oldValue;
     }
 
     @Override
     public E remove(Object key) {
-        if (key instanceof Integer) {
-            E value = root.contains((Integer) key) ? root.getValue((Integer) key) : null;
-            if (value != null) {
-                root.remove((Integer) key);
-            }
-            return value;
-        }
-        throw new IllegalArgumentException("Key needs to be an Integer");
+        if (key == null)
+            throw new NullPointerException();
+        if (!(key instanceof Integer))
+            throw new ClassCastException();
+        Integer integerKey = (Integer) key;
+        if (integerKey < 0 || integerKey > (root.universeSize - 1))
+            throw new IndexOutOfBoundsException(integerKey + " is not an element in the universe [0," + root.universeSize + "[");
+        E value = root.contains(integerKey) ? root.getValue(integerKey) : null;
+        if (value != null)
+            root.remove(integerKey);
+        return value;
     }
 
     @Override
@@ -252,18 +254,18 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
                 maxValue = null;
             } else if (universeSize == 2) {
                 if (key == 0) {
-                    min = 1;
                     minValue = maxValue;
+                    min = 1;
                 } else
                     min = 0;
-                max = min;
                 maxValue = minValue;
+                max = min;
             } else {
                 if (key == min) {
                     int firstCluster = summary.getMin();
                     key = index(firstCluster, clusters[firstCluster].getMin());
-                    min = key;
                     minValue = getValue(key);
+                    min = key;
                 }
                 clusters[high(key)].remove(low(key));
                 if (clusters[high(key)].getMin() == NIL) {
@@ -271,18 +273,18 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
                     if (key == max) {
                         int summaryMax = summary.getMax();
                         if (summaryMax == NIL) {
-                            max = min;
                             maxValue = minValue;
+                            max = min;
                         } else {
                             int m = index(summaryMax, clusters[summaryMax].getMax());
-                            max = m;
                             maxValue = getValue(m);
+                            max = m;
                         }
                     }
                 } else if (key == max) {
                     int m = index(high(key), clusters[high(key)].getMax());
-                    max = m;
                     maxValue = getValue(m);
+                    max = m;
                 }
             }
         }
