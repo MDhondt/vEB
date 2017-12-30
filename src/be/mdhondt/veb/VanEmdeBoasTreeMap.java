@@ -5,6 +5,8 @@ import java.util.*;
 
 import static java.lang.Integer.numberOfTrailingZeros;
 import static java.lang.Math.*;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
 
@@ -128,6 +130,62 @@ public class VanEmdeBoasTreeMap<E> implements Map<Integer, E> {
             entries.add(new SimpleEntry<>(key, root.getValue(key)));
         }
         return entries;
+    }
+    
+    public Optional<Integer> getMinimum() {
+        int min = root.getMin();
+        return min != NIL ? of(min) : empty();
+    }
+    
+    public Optional<E> getMinimumValue() {
+        int min = root.getMin();
+        return min != NIL ? of(get(min)) : empty();
+    }
+    
+    public Optional<Integer> getMaximum() {
+        int max = root.getMax();
+        return max != NIL ? of(max) : empty();
+    }
+    
+    public Optional<E> getMaximumValue() {
+        int max = root.getMax();
+        return max != NIL ? of(get(max)) : empty();
+    }
+    
+    public Optional<Integer> successor(Integer key) {
+        if (key == null)
+            throw new NullPointerException();
+        if (key < 0 || key > (root.universeSize - 1))
+            throw new IndexOutOfBoundsException(key + " is not an element in the universe [0," + root.universeSize + "[");
+        int successor = root.successor(key);
+        return successor != NIL ? of(successor) : empty();
+    }
+    
+    public Optional<E> successorValue(Integer key) {
+        if (key == null)
+            throw new NullPointerException();
+        if (key < 0 || key > (root.universeSize - 1))
+            throw new IndexOutOfBoundsException(key + " is not an element in the universe [0," + root.universeSize + "[");
+        int successor = root.successor(key);
+        return successor != NIL ? of(get(successor)) : empty();
+    }
+    
+    public Optional<Integer> predecessor(Integer key) {
+        if (key == null)
+            throw new NullPointerException();
+        if (key < 0 || key > (root.universeSize - 1))
+            throw new IndexOutOfBoundsException(key + " is not an element in the universe [0," + root.universeSize + "[");
+        int predecessor = root.predecessor(key);
+        return predecessor != NIL ? of(predecessor) : empty();
+    }
+    
+    public Optional<E> predecessorValue(Integer key) {
+        if (key == null)
+            throw new NullPointerException();
+        if (key < 0 || key > (root.universeSize - 1))
+            throw new IndexOutOfBoundsException(key + " is not an element in the universe [0," + root.universeSize + "[");
+        int predecessor = root.predecessor(key);
+        return predecessor != NIL ? of(get(predecessor)) : empty();
     }
 
     private static final class VEBTree<E> {
