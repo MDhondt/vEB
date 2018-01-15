@@ -1,10 +1,15 @@
 package be.mdhondt.veb;
 
 class TestObject {
+
     private String content;
 
     TestObject(String content) {
         this.content = content;
+    }
+
+    public void changeContent(String newContent) {
+        this.content = newContent;
     }
 
     @Override

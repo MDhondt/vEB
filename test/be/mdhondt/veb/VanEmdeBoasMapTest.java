@@ -8,7 +8,7 @@ import java.util.AbstractMap.SimpleEntry;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class VanEmdeBoasTreeMapTest {
+public class VanEmdeBoasMapTest {
 
     @Test
     public void size_whenCreated_thenEmpty() {
