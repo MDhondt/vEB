@@ -139,27 +139,29 @@ public class VanEmdeBoasMap<E> implements NavigableMap<Integer, E> {
 
     @Override
     public SortedMap<Integer, E> headMap(Integer toKey) {
-        throw new RuntimeException("Not yet implemented!");
+        return headMap(toKey, false);
     }
 
     @Override
     public SortedMap<Integer, E> tailMap(Integer fromKey) {
-        throw new RuntimeException("Not yet implemented!");
+        return tailMap(fromKey, true);
     }
 
     @Override
     public Comparator<? super Integer> comparator() {
-        throw new RuntimeException("Not yet implemented!");
+        return null;
     }
 
     @Override
     public Integer firstKey() {
-        throw new RuntimeException("Not yet implemented!");
+        int min = root.getMin();
+        return min != NIL ? min : null;
     }
 
     @Override
     public Integer lastKey() {
-        throw new RuntimeException("Not yet implemented!");
+        int max = root.getMax();
+        return max != NIL ? max : null;
     }
 
     @Override
