@@ -166,77 +166,115 @@ public class VanEmdeBoasMap<E> implements NavigableMap<Integer, E> {
 
     @Override
     public Entry<Integer, E> lowerEntry(Integer key) {
-        throw new RuntimeException("Not yet implemented!");
+        Integer lowerKey = lowerKey(key);
+        if (lowerKey == null)
+            return null;
+        E lowerValue = root.getValue(lowerKey);
+        return new SimpleEntry<>(lowerKey, lowerValue);
     }
 
     @Override
     public Integer lowerKey(Integer key) {
-        throw new RuntimeException("Not yet implemented!");
+        if (key == null)
+            throw new NullPointerException();
+        if (key < 0 || key > (root.universeSize - 1))
+            throw new IndexOutOfBoundsException(key + " is not an element in the universe [0," + root.universeSize + "[");
+        int predecessor = root.predecessor(key);
+        return predecessor != NIL ? predecessor : null;
     }
 
     @Override
     public Entry<Integer, E> floorEntry(Integer key) {
-        throw new RuntimeException("Not yet implemented!");
+        if (containsKey(key))
+            return new SimpleEntry<>(key, root.getValue(key));
+        return lowerEntry(key);
     }
 
     @Override
     public Integer floorKey(Integer key) {
-        throw new RuntimeException("Not yet implemented!");
+        if (containsKey(key))
+            return key;
+        return lowerKey(key);
     }
 
     @Override
     public Entry<Integer, E> ceilingEntry(Integer key) {
-        throw new RuntimeException("Not yet implemented!");
+        if (containsKey(key))
+            return new SimpleEntry<>(key, root.getValue(key));
+        return higherEntry(key);
     }
 
     @Override
     public Integer ceilingKey(Integer key) {
-        throw new RuntimeException("Not yet implemented!");
+        if (containsKey(key))
+            return key;
+        return higherKey(key);
     }
 
     @Override
     public Entry<Integer, E> higherEntry(Integer key) {
-        throw new RuntimeException("Not yet implemented!");
+        Integer higherKey = higherKey(key);
+        if (higherKey == null)
+            return null;
+        E higherValue = root.getValue(higherKey);
+        return new SimpleEntry<>(higherKey, higherValue);
     }
 
     @Override
     public Integer higherKey(Integer key) {
-        throw new RuntimeException("Not yet implemented!");
+        if (key == null)
+            throw new NullPointerException();
+        if (key < 0 || key > (root.universeSize - 1))
+            throw new IndexOutOfBoundsException(key + " is not an element in the universe [0," + root.universeSize + "[");
+        int successor = root.successor(key);
+        return successor != NIL ? successor : null;
     }
 
     @Override
     public Entry<Integer, E> firstEntry() {
-        throw new RuntimeException("Not yet implemented!");
+        if (isEmpty())
+            return null;
+        return new SimpleEntry<>(root.min, root.minValue);
     }
 
     @Override
     public Entry<Integer, E> lastEntry() {
-        throw new RuntimeException("Not yet implemented!");
+        if (isEmpty())
+            return null;
+        return new SimpleEntry<>(root.max, root.maxValue);
     }
 
     @Override
     public Entry<Integer, E> pollFirstEntry() {
-        throw new RuntimeException("Not yet implemented!");
+        if (isEmpty())
+            return null;
+        Entry<Integer, E> firstEntry = firstEntry();
+        remove(firstEntry.getKey());
+        return firstEntry;
     }
 
     @Override
     public Entry<Integer, E> pollLastEntry() {
-        throw new RuntimeException("Not yet implemented!");
+        if (isEmpty())
+            return null;
+        Entry<Integer, E> lastEntry = lastEntry();
+        remove(lastEntry.getKey());
+        return lastEntry;
     }
 
     @Override
     public NavigableMap<Integer, E> descendingMap() {
-        throw new RuntimeException("Not yet implemented!");
+        return new DescendingSubMap<>(this, true, null, true, true, null, true);
     }
 
     @Override
     public NavigableSet<Integer> navigableKeySet() {
-        throw new RuntimeException("Not yet implemented!");
+        return new TreeSet<>(keySet());
     }
 
     @Override
     public NavigableSet<Integer> descendingKeySet() {
-        throw new RuntimeException("Not yet implemented!");
+        return descendingMap().navigableKeySet();
     }
 
     @Override
@@ -246,80 +284,19 @@ public class VanEmdeBoasMap<E> implements NavigableMap<Integer, E> {
 
     @Override
     public NavigableMap<Integer, E> headMap(Integer toKey, boolean inclusive) {
-        throw new RuntimeException("Not yet implemented!");
+        return new AscendingSubMap<>(this, true, null, true, false, toKey, inclusive);
     }
 
     @Override
     public NavigableMap<Integer, E> tailMap(Integer fromKey, boolean inclusive) {
-        throw new RuntimeException("Not yet implemented!");
+        return new AscendingSubMap<>(this, false, fromKey, inclusive, true, null, true);
     }
 
-//    public Optional<Integer> getMinimum() {
-//        int min = root.getMin();
-//        return min != NIL ? of(min) : empty();
-//    }
-//
-//    public Optional<E> getMinimumValue() {
-//        int min = root.getMin();
-//        return min != NIL ? of(get(min)) : empty();
-//    }
-//
-//    public Optional<Integer> getMaximum() {
-//        int max = root.getMax();
-//        return max != NIL ? of(max) : empty();
-//    }
-//
-//    public Optional<E> getMaximumValue() {
-//        int max = root.getMax();
-//        return max != NIL ? of(get(max)) : empty();
-//    }
-//
-//    public Optional<Integer> successor(Integer key) {
-//        if (key == null)
-//            throw new NullPointerException();
-//        if (key < 0 || key > (root.universeSize - 1))
-//            throw new IndexOutOfBoundsException(key + " is not an element in the universe [0," + root.universeSize + "[");
-//        int successor = root.successor(key);
-//        return successor != NIL ? of(successor) : empty();
-//    }
-//
-//    public Optional<E> successorValue(Integer key) {
-//        if (key == null)
-//            throw new NullPointerException();
-//        if (key < 0 || key > (root.universeSize - 1))
-//            throw new IndexOutOfBoundsException(key + " is not an element in the universe [0," + root.universeSize + "[");
-//        int successor = root.successor(key);
-//        return successor != NIL ? of(get(successor)) : empty();
-//    }
-//
-//    public Optional<Integer> predecessor(Integer key) {
-//        if (key == null)
-//            throw new NullPointerException();
-//        if (key < 0 || key > (root.universeSize - 1))
-//            throw new IndexOutOfBoundsException(key + " is not an element in the universe [0," + root.universeSize + "[");
-//        int predecessor = root.predecessor(key);
-//        return predecessor != NIL ? of(predecessor) : empty();
-//    }
-//
-//    public Optional<E> predecessorValue(Integer key) {
-//        if (key == null)
-//            throw new NullPointerException();
-//        if (key < 0 || key > (root.universeSize - 1))
-//            throw new IndexOutOfBoundsException(key + " is not an element in the universe [0," + root.universeSize + "[");
-//        int predecessor = root.predecessor(key);
-//        return predecessor != NIL ? of(get(predecessor)) : empty();
-//    }
-
-    static <E> Integer keyOrNull(Entry<Integer, E> e) {
+    private static <E> Integer keyOrNull(Entry<Integer, E> e) {
         return (e == null) ? null : e.getKey();
     }
 
-    /**
-     * Returns the key corresponding to the specified Entry.
-     *
-     * @throws NoSuchElementException if the Entry is null
-     */
-    static <E> Integer key(Entry<Integer, E> e) {
+    private static <E> Integer key(Entry<Integer, E> e) {
         if (e == null)
             throw new NoSuchElementException();
         return e.getKey();
@@ -371,8 +348,8 @@ public class VanEmdeBoasMap<E> implements NavigableMap<Integer, E> {
             return (fromStart || key >= low) && (toEnd || high >= key);
         }
 
-        boolean inRange(Integer key, boolean inclusive) {
-            return inclusive ? inRange(key) : inClosedRange(key);
+        boolean notInRange(Integer key, boolean inclusive) {
+            return !(inclusive ? inRange(key) : inClosedRange(key));
         }
 
         Entry<Integer, E> absLowest() {
@@ -419,18 +396,6 @@ public class VanEmdeBoasMap<E> implements NavigableMap<Integer, E> {
                 return absHighest();
             Entry<Integer, E> e = backingMap.lowerEntry(key);
             return (e == null || tooLow(e.getKey())) ? null : e;
-        }
-
-        Entry<Integer, E> absHighFence() {
-            return (toEnd ? null : (highInclusive ?
-                                            backingMap.higherEntry(high) :
-                                            backingMap.ceilingEntry(high)));
-        }
-
-        Entry<Integer, E> absLowFence() {
-            return (fromStart ? null : (lowInclusive ?
-                                                backingMap.lowerEntry(low) :
-                                                backingMap.floorEntry(low)));
         }
 
         abstract Entry<Integer, E> subLowest();
@@ -610,23 +575,23 @@ public class VanEmdeBoasMap<E> implements NavigableMap<Integer, E> {
 
         @Override
         public NavigableMap<Integer, E> subMap(Integer fromKey, boolean fromInclusive, Integer toKey, boolean toInclusive) {
-            if (!inRange(fromKey, fromInclusive))
+            if (notInRange(fromKey, fromInclusive))
                 throw new IllegalArgumentException("fromKey out of range");
-            if (!inRange(toKey, toInclusive))
+            if (notInRange(toKey, toInclusive))
                 throw new IllegalArgumentException("toKey out of range");
             return new AscendingSubMap<>(backingMap, false, fromKey, fromInclusive, false, toKey, toInclusive);
         }
 
         @Override
         public NavigableMap<Integer, E> headMap(Integer toKey, boolean inclusive) {
-            if (!inRange(toKey, inclusive))
+            if (notInRange(toKey, inclusive))
                 throw new IllegalArgumentException("toKey out of range");
             return new AscendingSubMap<>(backingMap, fromStart, low, lowInclusive, false, toKey, inclusive);
         }
 
         @Override
         public NavigableMap<Integer, E> tailMap(Integer fromKey, boolean inclusive) {
-            if (!inRange(fromKey, inclusive))
+            if (notInRange(fromKey, inclusive))
                 throw new IllegalArgumentException("fromKey out of range");
             return new AscendingSubMap<>(backingMap, false, fromKey, inclusive, toEnd, high, highInclusive);
         }
@@ -674,21 +639,21 @@ public class VanEmdeBoasMap<E> implements NavigableMap<Integer, E> {
         }
 
         public NavigableMap<Integer, E> subMap(Integer fromKey, boolean fromInclusive, Integer toKey, boolean toInclusive) {
-            if (!inRange(fromKey, fromInclusive))
+            if (notInRange(fromKey, fromInclusive))
                 throw new IllegalArgumentException("fromKey out of range");
-            if (!inRange(toKey, toInclusive))
+            if (notInRange(toKey, toInclusive))
                 throw new IllegalArgumentException("toKey out of range");
             return new DescendingSubMap<>(backingMap, false, toKey, toInclusive, false, fromKey, fromInclusive);
         }
 
         public NavigableMap<Integer, E> headMap(Integer toKey, boolean inclusive) {
-            if (!inRange(toKey, inclusive))
+            if (notInRange(toKey, inclusive))
                 throw new IllegalArgumentException("toKey out of range");
             return new DescendingSubMap<>(backingMap, false, toKey, inclusive, toEnd, high, highInclusive);
         }
 
         public NavigableMap<Integer, E> tailMap(Integer fromKey, boolean inclusive) {
-            if (!inRange(fromKey, inclusive))
+            if (notInRange(fromKey, inclusive))
                 throw new IllegalArgumentException("fromKey out of range");
             return new DescendingSubMap<>(backingMap, fromStart, low, lowInclusive, false, fromKey, inclusive);
         }
@@ -911,12 +876,10 @@ public class VanEmdeBoasMap<E> implements NavigableMap<Integer, E> {
         }
     }
 
-    // i should be power of 2?
     private static int lowerSquare(int i) {
         return (int) pow(2.0, floor((log(i) / log(2.0)) / 2.0));
     }
 
-    // i should be power of 2?
     private static int upperSquare(int i) {
         return (int) pow(2.0, ceil((log(i) / log(2.0)) / 2.0));
     }
