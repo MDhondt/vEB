@@ -1,18 +1,19 @@
 package be.mdhondt.veb;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.util.AbstractMap.SimpleEntry;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void size_whenCreated_thenEmpty() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree1 = new VanEmdeBoasTreeMap<>(8);
-        VanEmdeBoasTreeMap<TestObject> vEBTree2 = new VanEmdeBoasTreeMap<>(16);
+        VanEmdeBoasMap<TestObject> vEBTree1 = new VanEmdeBoasMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree2 = new VanEmdeBoasMap<>(16);
 
         assertEquals(0, vEBTree1.size());
         assertEquals(0, vEBTree2.size());
@@ -20,7 +21,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void size_whenContainsElements() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
         vEBTree.put(1, new TestObject("one"));
         vEBTree.put(2, new TestObject("two"));
@@ -49,14 +50,14 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void isEmpty_whenEmpty() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
         assertTrue(vEBTree.isEmpty());
     }
 
     @Test
     public void isEmpty_whenNonEmpty() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         vEBTree.put(5, new TestObject("five"));
 
         assertFalse(vEBTree.isEmpty());
@@ -64,7 +65,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void isEmpty_whenEmptyAfterRemovals() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         vEBTree.put(5, new TestObject("five"));
 
         assertFalse(vEBTree.isEmpty());
@@ -76,7 +77,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void isEmpty_whenNotEverythingRemoved() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         vEBTree.put(5, new TestObject("five"));
         vEBTree.put(6, new TestObject("six"));
 
@@ -89,7 +90,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void containsKey_whenEmpty() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
         assertFalse(vEBTree.containsKey(0));
         assertFalse(vEBTree.containsKey(3));
@@ -99,7 +100,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void containsKey_whenContainsElements() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         vEBTree.put(1, new TestObject("one"));
         vEBTree.put(2, new TestObject("two"));
         vEBTree.put(3, new TestObject("three"));
@@ -114,7 +115,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void containsKey_whenElementNoLongerContained() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         vEBTree.put(1, new TestObject("one"));
 
         assertTrue(vEBTree.containsKey(1));
@@ -128,38 +129,46 @@ public class VanEmdeBoasTreeMapTest {
         assertTrue(vEBTree.containsKey(1));
     }
 
-    @Test(expected = ClassCastException.class)
+    @Test
     public void containsKey_whenInvalidKeyObject() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
-        vEBTree.containsKey(new TestObject("one"));
+        Executable codeToTest = () -> vEBTree.containsKey(new TestObject("one"));
+
+        assertThrows(ClassCastException.class, codeToTest);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void containsKey_whenNullKey() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
-        vEBTree.containsKey(null);
+        Executable codeToTest = () -> vEBTree.containsKey(null);
+
+        assertThrows(NullPointerException.class, codeToTest);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void containsKey_whenKeyIsNotInUniverse1() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
-        vEBTree.containsKey(-1);
+        Executable codeToTest = () -> vEBTree.containsKey(-1);
+
+        assertThrows(IndexOutOfBoundsException.class, codeToTest);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void containsKey_whenKeyIsNotInUniverse2() {
         int universeSize = 8;
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(universeSize);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(universeSize);
 
-        vEBTree.containsKey(universeSize);
+        Executable codeToTest = () -> vEBTree.containsKey(universeSize);
+
+        assertThrows(IndexOutOfBoundsException.class, codeToTest);
     }
 
     @Test
     public void containsValue_whenEmpty() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
         assertFalse(vEBTree.containsValue(new TestObject("one")));
         assertFalse(vEBTree.containsValue(new TestObject("two")));
@@ -169,7 +178,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void containsValue_whenContainsElements() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         vEBTree.put(1, new TestObject("one"));
         vEBTree.put(2, new TestObject("two"));
         vEBTree.put(3, new TestObject("three"));
@@ -184,7 +193,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void containsValue_whenElementNoLongerContained() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         TestObject to = new TestObject("one");
         vEBTree.put(1, to);
 
@@ -201,7 +210,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void containsValue_whenInvalidValueObject() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         TestObject to = new TestObject("one");
         vEBTree.put(1, to);
 
@@ -209,19 +218,20 @@ public class VanEmdeBoasTreeMapTest {
         assertFalse(vEBTree.containsValue(new Long("12")));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void containsValue_whenNullValue() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         TestObject to = new TestObject("one");
         vEBTree.put(1, to);
 
         assertTrue(vEBTree.containsValue(to));
-        vEBTree.containsValue(null);
+        Executable codeToTest = () -> vEBTree.containsValue(null);
+        assertThrows(NullPointerException.class, codeToTest);
     }
 
     @Test
     public void get_whenEmpty() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
         assertNull(vEBTree.get(0));
         assertNull(vEBTree.get(3));
@@ -231,7 +241,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void get_whenContainsElements() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         vEBTree.put(1, new TestObject("one"));
         vEBTree.put(2, new TestObject("two"));
         vEBTree.put(3, new TestObject("three"));
@@ -246,7 +256,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void get_whenElementNoLongerContained() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         vEBTree.put(1, new TestObject("one"));
 
         assertEquals(new TestObject("one"), vEBTree.get(1));
@@ -260,38 +270,46 @@ public class VanEmdeBoasTreeMapTest {
         assertEquals(new TestObject("one"), vEBTree.get(1));
     }
 
-    @Test(expected = ClassCastException.class)
+    @Test
     public void get_whenInvalidKeyObject() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
-        vEBTree.get(new TestObject("one"));
+        Executable codeToTest = () -> vEBTree.get(new TestObject("one"));
+
+        assertThrows(ClassCastException.class, codeToTest);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void get_whenNullKey() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
-        vEBTree.get(null);
+        Executable codeToTest = () -> vEBTree.get(null);
+
+        assertThrows(NullPointerException.class, codeToTest);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void get_whenKeyIsNotInUniverse1() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
-        vEBTree.get(-1);
+        Executable codeToTest = () -> vEBTree.get(-1);
+
+        assertThrows(IndexOutOfBoundsException.class, codeToTest);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void get_whenKeyIsNotInUniverse2() {
         int universeSize = 8;
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(universeSize);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(universeSize);
 
-        vEBTree.get(universeSize);
+        Executable codeToTest = () -> vEBTree.get(universeSize);
+
+        assertThrows(IndexOutOfBoundsException.class, codeToTest);
     }
 
     @Test
     public void put_whenEmpty() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
         assertNull(vEBTree.put(2, new TestObject("two")));
         assertTrue(vEBTree.containsKey(2));
@@ -300,7 +318,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void put_whenContainsElements() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         vEBTree.put(2, new TestObject("two"));
         vEBTree.put(3, new TestObject("three"));
         vEBTree.put(4, new TestObject("four"));
@@ -319,43 +337,53 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void put_whenKeyAlreadyExists() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         vEBTree.put(6, new TestObject("six"));
 
         assertTrue(vEBTree.containsKey(6));
         assertEquals(new TestObject("six"), vEBTree.put(6, new TestObject("six'")));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void put_whenKeyIsNull() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
-        vEBTree.put(null, new TestObject("null"));
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
+
+        Executable codeToTest = () -> vEBTree.put(null, new TestObject("null"));
+
+        assertThrows(NullPointerException.class, codeToTest);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void put_whenValueIsNull() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
-        vEBTree.put(1, null);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
+
+        Executable codeToTest = () -> vEBTree.put(1, null);
+
+        assertThrows(NullPointerException.class, codeToTest);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void put_whenKeyIsNotInUniverse1() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
-        vEBTree.put(-1, new TestObject("minusOne"));
+        Executable codeToTest = () -> vEBTree.put(-1, new TestObject("minusOne"));
+
+        assertThrows(IndexOutOfBoundsException.class, codeToTest);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void put_whenKeyIsNotInUniverse2() {
         int universeSize = 8;
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(universeSize);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(universeSize);
 
-        vEBTree.put(universeSize, new TestObject("tooBig"));
+        Executable codeToTest = () -> vEBTree.put(universeSize, new TestObject("tooBig"));
+
+        assertThrows(IndexOutOfBoundsException.class, codeToTest);
     }
 
     @Test
     public void remove_whenEmpty() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
         assertNull(vEBTree.remove(0));
         assertNull(vEBTree.remove(3));
@@ -365,7 +393,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void remove_whenContainsElements() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(16);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(16);
         vEBTree.put(1, new TestObject("one"));
         vEBTree.put(2, new TestObject("two"));
         vEBTree.put(3, new TestObject("three"));
@@ -380,7 +408,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void remove_whenElementNoLongerContained() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         vEBTree.put(1, new TestObject("one"));
 
         assertTrue(vEBTree.containsKey(1));
@@ -393,39 +421,47 @@ public class VanEmdeBoasTreeMapTest {
         assertNull(vEBTree.get(1));
     }
 
-    @Test(expected = ClassCastException.class)
+    @Test
     public void remove_whenInvalidKeyObject() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         vEBTree.put(1, new TestObject("one"));
 
-        vEBTree.remove(new TestObject("one"));
+        Executable codeToTest = () -> vEBTree.remove(new TestObject("one"));
+
+        assertThrows(ClassCastException.class, codeToTest);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void remove_whenNullKey() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
-        vEBTree.remove(null);
+        Executable codeToTest = () -> vEBTree.remove(null);
+
+        assertThrows(NullPointerException.class, codeToTest);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void remove_whenKeyIsNotInUniverse1() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
-        vEBTree.remove(-1);
+        Executable codeToTest = () -> vEBTree.remove(-1);
+
+        assertThrows(IndexOutOfBoundsException.class, codeToTest);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void remove_whenKeyIsNotInUniverse2() {
         int universeSize = 8;
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(universeSize);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(universeSize);
 
-        vEBTree.remove(universeSize);
+        Executable codeToTest = () -> vEBTree.remove(universeSize);
+
+        assertThrows(IndexOutOfBoundsException.class, codeToTest);
     }
 
     @Test
     public void clear_whenEmpty() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
         assertEquals(0, vEBTree.size());
 
@@ -436,7 +472,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void clear_whenContainsElements() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         vEBTree.put(1, new TestObject("one"));
         vEBTree.put(2, new TestObject("two"));
         vEBTree.put(3, new TestObject("three"));
@@ -450,7 +486,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void clear_whenFull() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(4);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(4);
         vEBTree.put(0, new TestObject("zero"));
         vEBTree.put(1, new TestObject("one"));
         vEBTree.put(2, new TestObject("two"));
@@ -465,7 +501,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void keysValuesAndEntries_whenEmpty() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
 
         assertEquals(0, vEBTree.size());
         assertEquals(0, vEBTree.keySet().size());
@@ -475,7 +511,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void keysValuesAndEntries_whenContainsElements() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(8);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(8);
         vEBTree.put(1, new TestObject("one"));
         vEBTree.put(2, new TestObject("two"));
         vEBTree.put(3, new TestObject("three"));
@@ -491,7 +527,7 @@ public class VanEmdeBoasTreeMapTest {
 
     @Test
     public void keysValuesAndEntries_whenFull() {
-        VanEmdeBoasTreeMap<TestObject> vEBTree = new VanEmdeBoasTreeMap<>(4);
+        VanEmdeBoasMap<TestObject> vEBTree = new VanEmdeBoasMap<>(4);
         vEBTree.put(0, new TestObject("zero"));
         vEBTree.put(1, new TestObject("one"));
         vEBTree.put(2, new TestObject("two"));
