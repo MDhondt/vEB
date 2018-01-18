@@ -26,6 +26,7 @@ VanEmdeBoasMap<String> vEBMap = new VanEmdeBoasMap<>(8);
 
 ## Acknowledgments
 
+* Peter van Emde Boas for the invention of this data structure 
 * Cormen, Leiserson, Rivest, Stein for their algorithms in 'Introduction to Algorithms'
 * Josh Bloch and Doug Lea for their implementation of java.util.TreeMap
 
